@@ -1,0 +1,179 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'booking.admin.title'|trans({}, 'booking') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <h1 class="h3 mb-0">{{ 'booking.admin.title'|trans({}, 'booking') }}</h1>
+        {% if calendars|length > 1 %}
+            <form method="get" class="d-flex align-items-center gap-2">
+                <label class="form-label mb-0" for="bookingKey">{{ 'booking.admin.col_calendar'|trans({}, 'booking') }}</label>
+                <select class="form-select form-select-sm" name="bookingKey" id="bookingKey" onchange="this.form.submit()">
+                    {% for calendarItem in calendars %}
+                        <option value="{{ calendarItem.key }}"{% if calendarItem.key == bookingKey %} selected{% endif %}>{{ calendarItem.label }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        {% endif %}
+    </div>
+
+    {% if bookingKey == '' or calendar is null %}
+        <div class="alert alert-warning">{{ 'booking.admin.no_section'|trans({}, 'booking') }}</div>
+    {% else %}
+        <div class="row g-4">
+            <div class="col-xl-4">
+                <div class="card shadow-sm">
+                    <div class="card-header fw-semibold">{{ 'booking.admin.settings'|trans({}, 'booking') }}</div>
+                    <div class="card-body">
+                        <form method="post">
+                            <input type="hidden" name="_action" value="settings">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" name="block_weekends" id="block_weekends" value="1"{% if calendar.blockWeekends %} checked{% endif %}>
+                                <label class="form-check-label" for="block_weekends">{{ 'booking.admin.block_weekends'|trans({}, 'booking') }}</label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="slot_duration_minutes">{{ 'booking.admin.slot_duration'|trans({}, 'booking') }}</label>
+                                <input class="form-control" type="number" min="15" max="240" step="15" name="slot_duration_minutes" id="slot_duration_minutes" value="{{ calendar.slotDurationMinutes }}">
+                                <div class="form-text">{{ 'booking.admin.slot_duration_help'|trans({}, 'booking') }}</div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="form-label" for="work_start">{{ 'booking.admin.work_start'|trans({}, 'booking') }}</label>
+                                    <input class="form-control" type="time" name="work_start" id="work_start" value="{{ calendar.workStart }}">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label" for="work_end">{{ 'booking.admin.work_end'|trans({}, 'booking') }}</label>
+                                    <input class="form-control" type="time" name="work_end" id="work_end" value="{{ calendar.workEnd }}">
+                                </div>
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label class="form-label" for="horizon_days">{{ 'booking.admin.horizon_days'|trans({}, 'booking') }}</label>
+                                <input class="form-control" type="number" min="7" max="365" name="horizon_days" id="horizon_days" value="{{ calendar.horizonDays }}">
+                            </div>
+                            <button type="submit" class="btn btn-primary">{{ 'booking.admin.save'|trans({}, 'booking') }}</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mt-4">
+                    <div class="card-header fw-semibold">{{ 'booking.admin.block_date'|trans({}, 'booking') }}</div>
+                    <div class="card-body">
+                        <form method="post" class="row g-2 align-items-end">
+                            <input type="hidden" name="_action" value="block_date">
+                            <div class="col-md-5">
+                                <label class="form-label" for="blocked_date">{{ 'booking.admin.date'|trans({}, 'booking') }}</label>
+                                <input class="form-control" type="date" name="blocked_date" id="blocked_date" required>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label" for="label">{{ 'booking.admin.label'|trans({}, 'booking') }}</label>
+                                <input class="form-control" type="text" name="label" id="label" placeholder="{{ 'booking.admin.label_placeholder'|trans({}, 'booking') }}">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-outline-danger w-100">{{ 'booking.admin.block'|trans({}, 'booking') }}</button>
+                            </div>
+                        </form>
+                        {% if blockedDates is not empty %}
+                            <ul class="list-group list-group-flush mt-3">
+                                {% for blocked in blockedDates %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                        <span>{{ blocked.blockedDate|date('d/m/Y') }}{% if blocked.label %} — {{ blocked.label }}{% endif %}</span>
+                                        <form method="post" class="d-inline">
+                                            <input type="hidden" name="_action" value="unblock_date">
+                                            <input type="hidden" name="blocked_id" value="{{ blocked.id }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary">{{ 'booking.admin.unblock'|trans({}, 'booking') }}</button>
+                                        </form>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-8">
+                {% if editingReservation %}
+                    {% set editDate = editingReservation.startsAt|booking_datetime('Y-m-d') %}
+                    {% set editTime = editingReservation.startsAt|booking_datetime('H:i') %}
+                    <div class="card shadow-sm mb-4 border-primary">
+                        <div class="card-header fw-semibold">{{ 'booking.admin.edit_reservation'|trans({}, 'booking') }}</div>
+                        <div class="card-body">
+                            <form method="post" class="row g-3">
+                                <input type="hidden" name="_action" value="update_reservation">
+                                <input type="hidden" name="reservation_id" value="{{ editingReservation.id }}">
+                                <div class="col-md-6">
+                                    <label class="form-label">{{ 'booking.admin.col_name'|trans({}, 'booking') }}</label>
+                                    <input class="form-control" type="text" name="customer_name" value="{{ editingReservation.customerName }}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">{{ 'booking.admin.col_email'|trans({}, 'booking') }}</label>
+                                    <input class="form-control" type="email" name="email" value="{{ editingReservation.email }}" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">{{ 'booking.form.phone'|trans({}, 'booking') }}</label>
+                                    <input class="form-control" type="tel" name="phone" value="{{ editingReservation.phone|default('') }}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">{{ 'booking.admin.date'|trans({}, 'booking') }}</label>
+                                    <input class="form-control" type="date" name="date" value="{{ editDate }}" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">{{ 'booking.form.time'|trans({}, 'booking') }}</label>
+                                    <input class="form-control" type="time" name="time" value="{{ editTime }}" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">{{ 'booking.form.message'|trans({}, 'booking') }}</label>
+                                    <textarea class="form-control" name="message" rows="2">{{ editingReservation.message|default('') }}</textarea>
+                                </div>
+                                <div class="col-12 d-flex gap-2">
+                                    <button type="submit" class="btn btn-success">{{ 'booking.admin.save'|trans({}, 'booking') }}</button>
+                                    <a class="btn btn-outline-secondary" href="{{ path('hermes_booking_admin_index', { bookingKey: bookingKey }) }}">{{ 'booking.admin.cancel'|trans({}, 'booking') }}</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="card shadow-sm">
+                    <div class="card-header fw-semibold">{{ 'booking.admin.reservations'|trans({}, 'booking') }}</div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ 'booking.admin.col_date'|trans({}, 'booking') }}</th>
+                                    <th>{{ 'booking.admin.col_name'|trans({}, 'booking') }}</th>
+                                    <th>{{ 'booking.admin.col_email'|trans({}, 'booking') }}</th>
+                                    <th>{{ 'booking.admin.col_phone'|trans({}, 'booking') }}</th>
+                                    <th class="text-end">{{ 'booking.admin.actions'|trans({}, 'booking') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reservation in reservations %}
+                                    <tr>
+                                        <td>{{ reservation.startsAt|booking_datetime }}</td>
+                                        <td>{{ reservation.customerName }}</td>
+                                        <td>{{ reservation.email }}</td>
+                                        <td>{{ reservation.phone|default('—') }}</td>
+                                        <td class="text-end text-nowrap">
+                                            <a class="btn btn-sm btn-outline-primary" href="{{ path('hermes_booking_admin_index', { bookingKey: bookingKey, edit: reservation.id }) }}">{{ 'booking.admin.edit'|trans({}, 'booking') }}</a>
+                                            <form method="post" class="d-inline" onsubmit="return confirm('{{ 'booking.admin.delete_confirm'|trans({}, 'booking')|e('js') }}');">
+                                                <input type="hidden" name="_action" value="delete_reservation">
+                                                <input type="hidden" name="reservation_id" value="{{ reservation.id }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">{{ 'booking.admin.delete'|trans({}, 'booking') }}</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-muted p-4 text-center">{{ 'booking.admin.no_reservations'|trans({}, 'booking') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

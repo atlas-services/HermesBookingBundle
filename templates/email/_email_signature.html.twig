@@ -1,0 +1,28 @@
+{% if signature.siteName or signature.logoUrl or signature.siteUrl %}
+    <hr style="border: none; border-top: 1px solid #ddd; margin: 2rem 0 1rem;">
+    <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+        <tr>
+            {% if signature.logoUrl %}
+                <td style="vertical-align: middle; padding-right: 12px;">
+                    {% if signature.siteUrl %}
+                        <a href="{{ signature.siteUrl|e('html_attr') }}" style="text-decoration: none;">
+                            <img src="{{ signature.logoUrl|e('html_attr') }}" alt="{{ signature.siteName|default('')|e('html_attr') }}" style="max-height: 48px; max-width: 200px; display: block;">
+                        </a>
+                    {% else %}
+                        <img src="{{ signature.logoUrl|e('html_attr') }}" alt="{{ signature.siteName|default('')|e('html_attr') }}" style="max-height: 48px; max-width: 200px; display: block;">
+                    {% endif %}
+                </td>
+            {% endif %}
+            {% if signature.siteName or signature.siteUrl %}
+                <td style="vertical-align: middle; font-size: 0.875rem; color: #666;">
+                    {% if signature.siteName %}
+                        <strong style="color: #333; display: block;">{{ signature.siteName|e }}</strong>
+                    {% endif %}
+                    {% if signature.siteUrl %}
+                        <a href="{{ signature.siteUrl|e('html_attr') }}" style="color: #0066cc; text-decoration: none;">{{ signature.siteUrl|e }}</a>
+                    {% endif %}
+                </td>
+            {% endif %}
+        </tr>
+    </table>
+{% endif %}

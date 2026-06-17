@@ -1,0 +1,6 @@
+hermes_booking:
+  resource:
+    path: ../src/Controller/
+    namespace: AtlasServices\HermesBookingBundle\Controller
+  type: attribute
+

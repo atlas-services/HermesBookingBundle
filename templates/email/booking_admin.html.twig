@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="{{ locale|default('fr') }}">
+<head>
+    <meta charset="utf-8">
+    <title>{{ subject }}</title>
+</head>
+<body style="font-family: sans-serif; line-height: 1.5; color: #333;">
+    <h1 style="font-size: 1.25rem;">
+        {{ (updated ? 'booking.mail.admin_updated_heading' : 'booking.mail.admin_heading')|trans({}, 'booking', locale|default('fr')) }}
+    </h1>
+    {% if calendarLabel %}
+        <p><strong>{{ 'booking.mail.calendar'|trans({}, 'booking', locale|default('fr')) }}:</strong> {{ calendarLabel|e }}</p>
+    {% endif %}
+    {% if updated and previousDate %}
+        <p><strong>{{ 'booking.mail.previous_date'|trans({}, 'booking', locale|default('fr')) }}:</strong> {{ previousDate|e }}</p>
+    {% endif %}
+    <table cellpadding="6" cellspacing="0" border="0" style="border-collapse: collapse;">
+        <tr>
+            <th align="left" style="vertical-align: top;">{{ 'booking.form.name'|trans({}, 'booking', locale|default('fr')) }}</th>
+            <td>{{ reservation.customerName|e }}</td>
+        </tr>
+        <tr>
+            <th align="left" style="vertical-align: top;">{{ 'booking.form.email'|trans({}, 'booking', locale|default('fr')) }}</th>
+            <td>{{ reservation.email|e }}</td>
+        </tr>
+        {% if reservation.phone %}
+        <tr>
+            <th align="left" style="vertical-align: top;">{{ 'booking.form.phone'|trans({}, 'booking', locale|default('fr')) }}</th>
+            <td>{{ reservation.phone|e }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th align="left" style="vertical-align: top;">{{ 'booking.form.date'|trans({}, 'booking', locale|default('fr')) }}</th>
+            <td>{{ dateLabel|e }}</td>
+        </tr>
+        {% if reservation.message %}
+        <tr>
+            <th align="left" style="vertical-align: top;">{{ 'booking.form.message'|trans({}, 'booking', locale|default('fr')) }}</th>
+            <td>{{ reservation.message|nl2br }}</td>
+        </tr>
+        {% endif %}
+    </table>
+    {% include '@HermesBooking/email/_email_signature.html.twig' %}
+</body>
+</html>

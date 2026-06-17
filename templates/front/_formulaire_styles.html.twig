@@ -1,0 +1,14 @@
+{% set pres = presentation|default({}) %}
+<style>
+    .hermes-form-{{ form_id }} .hermes-form-field {
+        background-color: {{ pres.bgcolor_input|default('#ffffff') }};
+        color: {{ pres.color_input|default('#000000') }};
+        border-color: {{ pres.border_color_input|default('#dee2e6') }};
+    }
+    .hermes-form-{{ form_id }} .hermes-form-field:focus {
+        background-color: {{ pres.bgcolor_input|default('#ffffff') }};
+        color: {{ pres.color_input|default('#000000') }};
+        border-color: {{ pres.border_color_input|default('#dee2e6') }};
+        box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.08);
+    }
+</style>

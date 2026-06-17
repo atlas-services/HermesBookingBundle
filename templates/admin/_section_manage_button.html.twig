@@ -1,0 +1,5 @@
+{% if hermes_booking_installed|default(false) and hermes_booking_enabled|default(false) and section.template is defined and section.template and section.template.code == 'booking' %}
+    <a class="btn btn-outline-primary btn-sm" href="{{ path('hermes_booking_admin_index', { bookingKey: 's' ~ section.id }) }}">
+        {{ 'booking.admin.manage_section'|trans({}, 'booking') }}
+    </a>
+{% endif %}

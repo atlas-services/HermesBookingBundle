@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="{{ locale|default('fr') }}">
+<head>
+    <meta charset="utf-8">
+    <title>{{ subject }}</title>
+</head>
+<body style="font-family: sans-serif; line-height: 1.5; color: #333;">
+    <h1 style="font-size: 1.25rem;">
+        {{ (updated ? 'booking.mail.customer_updated_heading' : 'booking.mail.customer_heading')|trans({}, 'booking', locale|default('fr')) }}
+    </h1>
+    <p>{{ 'booking.mail.customer_greeting'|trans({'%name%': reservation.customerName}, 'booking', locale|default('fr')) }}</p>
+    {% if calendarLabel %}
+        <p><strong>{{ 'booking.mail.calendar'|trans({}, 'booking', locale|default('fr')) }}:</strong> {{ calendarLabel|e }}</p>
+    {% endif %}
+    <p>
+        {% if updated and previousDate %}
+            {{ 'booking.mail.customer_updated_body'|trans({
+                '%previous_date%': previousDate,
+                '%date%': dateLabel,
+            }, 'booking', locale|default('fr'))|nl2br }}
+        {% else %}
+            {{ 'booking.mail.customer_body_html'|trans({
+                '%date%': dateLabel,
+            }, 'booking', locale|default('fr'))|nl2br }}
+        {% endif %}
+    </p>
+    {% include '@HermesBooking/email/_email_signature.html.twig' %}
+</body>
+</html>

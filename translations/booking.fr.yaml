@@ -1,0 +1,101 @@
+booking:
+  form:
+    name: Nom
+    email: E-mail
+    phone: Téléphone
+    message: Message
+    date: Date souhaitée
+    date_placeholder: Choisir une date
+    date_unavailable: Cette date n’est pas disponible. Merci d’en choisir une autre.
+    date_invalid: Merci de saisir une date valide.
+    time: Créneau
+    time_placeholder: Choisir un créneau
+    time_invalid: Merci de choisir un créneau valide.
+    time_unavailable: Ce créneau n’est plus disponible. Merci d’en choisir un autre.
+    no_slots: Aucun créneau disponible pour cette date.
+    select_day: Choisissez une date dans le calendrier.
+    select_slot: Choisissez un créneau horaire.
+    available_slots: Créneaux disponibles
+    slot_summary: 'Créneau sélectionné : %date% à %time%'
+    prev_month: Mois précédent
+    next_month: Mois suivant
+    weekday_mon: Lun
+    weekday_tue: Mar
+    weekday_wed: Mer
+    weekday_thu: Jeu
+    weekday_fri: Ven
+    weekday_sat: Sam
+    weekday_sun: Dim
+    submit: Réserver
+  flash:
+    success: Votre demande de réservation a bien été enregistrée. Un e-mail de confirmation vous a été envoyé.
+    error: Ce créneau n'est plus disponible. Merci de choisir une autre date ou heure.
+    invalid: Merci de corriger les erreurs du formulaire.
+  mail:
+    admin_heading: Nouvelle demande de réservation
+    admin_updated_heading: Réservation modifiée
+    customer_heading: Confirmation de votre demande de réservation
+    customer_updated_heading: Votre réservation a été modifiée
+    customer_greeting: 'Bonjour %name%,'
+    calendar: Agenda
+    previous_date: Ancienne date
+    admin_subject: 'Nouvelle réservation — %name% (%date%)'
+    customer_subject: Confirmation de votre demande de réservation
+    customer_body_html: |
+      Nous avons bien reçu votre demande de réservation pour le %date%.
+      Nous vous recontacterons si nécessaire.
+    admin_updated_subject: 'Réservation modifiée — %name% (%date%)'
+    customer_updated_subject: Votre réservation a été modifiée
+    customer_updated_body: |
+      Votre réservation a été modifiée.
+      Ancienne date : %previous_date%
+      Nouvelle date : %date%
+  admin:
+    title: Réservations
+    section_title: 'Agenda section #%id%'
+    back: Retour aux réservations
+    settings: Paramètres des créneaux
+    block_weekends: Bloquer les week-ends
+    slot_duration: Durée d'un créneau (minutes)
+    slot_duration_help: 'Ex. 60 min de 09:00 à 18:00 → créneaux 09:00, 10:00, 11:00…'
+    slots_help: |
+      Les créneaux sont générés automatiquement à partir des horaires ci-contre.
+      Une réservation existante retire le créneau correspondant.
+      Les dates bloquées et les week-ends (si activé) masquent le jour entier.
+    slots_preview: Aperçu des créneaux
+    slots_preview_date: 'Prochain jour disponible : %date%'
+    slots_preview_empty: Aucun créneau restant ce jour-là (tous réservés ou horaires passés).
+    slots_preview_none: Aucune date disponible avec la configuration actuelle.
+    work_start: Début
+    work_end: Fin
+    horizon_days: Horizon (jours)
+    save: Enregistrer
+    cancel: Annuler
+    edit: Modifier
+    delete: Supprimer
+    delete_confirm: Supprimer cette réservation ?
+    actions: Actions
+    edit_reservation: Modifier la réservation
+    reservation_updated: Réservation mise à jour. Un e-mail a été envoyé au client.
+    reservation_deleted: Réservation supprimée.
+    no_section: Aucune section « Réservation » n’a été trouvée sur le site.
+    block_date: Bloquer une date
+    date: Date
+    label: Libellé
+    label_placeholder: Jour férié, congés…
+    block: Bloquer
+    unblock: Débloquer
+    blocked_dates: Dates bloquées
+    no_blocked_dates: Aucune date bloquée.
+    reservations: Rendez-vous
+    no_reservations: Aucune réservation.
+    col_calendar: Agenda
+    col_date: Date / heure
+    col_name: Nom
+    col_email: E-mail
+    col_phone: Téléphone
+    manage_section: Gérer l'agenda
+    nav: Réservations
+    settings_saved: Paramètres enregistrés.
+    date_blocked: Date bloquée.
+    date_unblocked: Date débloquée.

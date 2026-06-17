@@ -1,0 +1,95 @@
+{% set form_id = 'booking-' ~ (booking_key|default('standalone')) %}
+{% set pres = form_presentation %}
+{% set input_class = 'form-control hermes-form-field rounded-' ~ pres.rounded_input ~ ' py-' ~ pres.py_input ~ ' my-' ~ pres.my_input %}
+
+<div id="formulaire" class="hermes-form-{{ form_id }} text-center py-4" style="background-color: {{ pres.bgcolor }}; color: {{ pres.color }};">
+    <div class="container">
+        {% if booking_presentation_text %}
+            <div class="mb-3">{{ booking_presentation_text|raw }}</div>
+        {% endif %}
+        {% if booking_user_text %}
+            <div class="mb-4">{{ booking_user_text|raw }}</div>
+        {% endif %}
+
+        {{ form_start(booking_form, {
+            action: booking_submit_url,
+            method: 'POST',
+            attr: {
+                class: 'hermes-form-' ~ form_id,
+                id: 'form_booking',
+                'data-controller': 'booking-form',
+                'data-booking-form-slots-url-value': booking_slots_url,
+                'data-booking-form-calendar-url-value': booking_calendar_url,
+                'data-booking-form-no-slots-message-value': 'booking.form.no_slots'|trans({}, 'booking'),
+                'data-booking-form-select-day-message-value': 'booking.form.select_day'|trans({}, 'booking'),
+                'data-booking-form-select-slot-message-value': 'booking.form.select_slot'|trans({}, 'booking'),
+                'data-booking-form-summary-template-value': 'booking.form.slot_summary'|trans({}, 'booking'),
+            },
+        }) }}
+        <input type="hidden" name="_redirect" value="{{ app.request.uri }}">
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10">
+                <div class="hermes-booking-form__card text-start">
+                    <div class="hermes-booking-picker" data-booking-form-target="picker">
+                        <div class="hermes-booking-picker__header">
+                            <h3 class="hermes-booking-picker__title h5 mb-0" data-booking-form-target="monthLabel"></h3>
+                            <div class="hermes-booking-picker__nav">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-action="booking-form#previousMonth" aria-label="{{ 'booking.form.prev_month'|trans({}, 'booking') }}">&larr;</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-action="booking-form#nextMonth" aria-label="{{ 'booking.form.next_month'|trans({}, 'booking') }}">&rarr;</button>
+                            </div>
+                        </div>
+
+                        <div class="hermes-booking-picker__weekdays">
+                            {% for weekday in ['booking.form.weekday_mon', 'booking.form.weekday_tue', 'booking.form.weekday_wed', 'booking.form.weekday_thu', 'booking.form.weekday_fri', 'booking.form.weekday_sat', 'booking.form.weekday_sun'] %}
+                                <div class="hermes-booking-picker__weekday">{{ weekday|trans({}, 'booking') }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="hermes-booking-picker__grid" data-booking-form-target="daysGrid"></div>
+
+                        <div class="hermes-booking-picker__slots">
+                            <div class="hermes-booking-picker__slots-title">{{ 'booking.form.available_slots'|trans({}, 'booking') }}</div>
+                            <div class="hermes-booking-picker__slot-grid" data-booking-form-target="slotsGrid"></div>
+                            <p class="hermes-booking-picker__hint text-muted mb-0" data-booking-form-target="hint"></p>
+                            <p class="hermes-booking-picker__summary mb-0" data-booking-form-target="summary"></p>
+                        </div>
+                    </div>
+
+                    <div class="hermes-booking-form__fields">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                {{ form_row(booking_form.customerName, { attr: { class: input_class } }) }}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                {{ form_row(booking_form.email, { attr: { class: input_class } }) }}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                {{ form_row(booking_form.phone, { attr: { class: input_class } }) }}
+                            </div>
+                            <div class="col-12">
+                                {{ form_row(booking_form.message, { attr: { class: input_class } }) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-none">
+                    {{ form_widget(booking_form.date, { attr: { 'data-booking-form-target': 'dateInput' } }) }}
+                    {{ form_widget(booking_form.time, { attr: { 'data-booking-form-target': 'timeInput' } }) }}
+                </div>
+                {{ form_errors(booking_form.date) }}
+                {{ form_errors(booking_form.time) }}
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn {{ pres.bgcolor_btn }} px-5">
+                        {{ 'booking.form.submit'|trans({}, 'booking') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {% do booking_form.date.setRendered(true) %}
+        {% do booking_form.time.setRendered(true) %}
+        {{ form_end(booking_form, { render_rest: true }) }}
+    </div>
+</div>

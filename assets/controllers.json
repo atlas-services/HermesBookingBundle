@@ -1,0 +1,10 @@
+{
+  "controllers": {
+    "booking-form": {
+      "main": "controllers/booking_form_controller.js",
+      "enabled": true,
+      "fetch": "eager"
+    }
+  },
+  "entrypoints": []
+}

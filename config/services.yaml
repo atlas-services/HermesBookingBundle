@@ -1,0 +1,29 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  AtlasServices\HermesBookingBundle\:
+    resource: '../src/'
+    exclude:
+      - '../src/DependencyInjection/'
+      - '../src/HermesBookingBundle.php'
+      - '../src/Entity/'
+
+  AtlasServices\HermesBookingBundle\Service\BookingDateTimeHelper:
+    arguments:
+      $timezone: '%hermes_booking.timezone%'
+
+  AtlasServices\HermesBookingBundle\Service\DefaultBookingNotificationRecipientResolver:
+    arguments:
+      $adminEmail: '%hermes_booking.admin_email%'
+      $fromEmail: '%hermes_booking.from_email%'
+
+  AtlasServices\HermesBookingBundle\Contract\BookingNotificationRecipientResolverInterface:
+    alias: AtlasServices\HermesBookingBundle\Service\DefaultBookingNotificationRecipientResolver
+
+  AtlasServices\HermesBookingBundle\Contract\BookingMailSignatureProviderInterface:
+    alias: AtlasServices\HermesBookingBundle\Service\DefaultBookingMailSignatureProvider
+
+  AtlasServices\HermesBookingBundle\Service\BookingMailer:
+    autowire: true
