@@ -27,8 +27,8 @@ class BookingBlockedDateRepository extends ServiceEntityRepository
             ->andWhere('b.bookingKey = :bookingKey')
             ->andWhere('b.blockedDate BETWEEN :from AND :to')
             ->setParameter('bookingKey', $bookingKey)
-            ->setParameter('from', $from->setTime(0, 0))
-            ->setParameter('to', $to->setTime(23, 59, 59))
+            ->setParameter('from', $from->format('Y-m-d'))
+            ->setParameter('to', $to->format('Y-m-d'))
             ->getQuery()
             ->getResult();
 
@@ -40,6 +40,17 @@ class BookingBlockedDateRepository extends ServiceEntityRepository
         }
 
         return $map;
+    }
+
+    public function findOneByBookingKeyAndDate(string $bookingKey, \DateTimeImmutable $day): ?BookingBlockedDate
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.bookingKey = :bookingKey')
+            ->andWhere('b.blockedDate = :day')
+            ->setParameter('bookingKey', $bookingKey)
+            ->setParameter('day', $day->format('Y-m-d'))
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**

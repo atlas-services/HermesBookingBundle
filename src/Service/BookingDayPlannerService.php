@@ -113,6 +113,7 @@ final class BookingDayPlannerService
      */
     private function resolveDayState(\DateTimeImmutable $day, object $calendar, array $blocked): string
     {
+        $day = $this->normalizePlannerDay($day);
         $key = $day->format('Y-m-d');
         $today = $this->today();
 
@@ -197,9 +198,23 @@ final class BookingDayPlannerService
      */
     private function onlyWeekdaysInHorizon(string $bookingKey, array $weekdays, object $calendar): void
     {
-        $this->setAllInHorizon($bookingKey, false, $calendar);
-        if ($weekdays !== []) {
-            $this->setWeekdaysInHorizon($bookingKey, $weekdays, true, $calendar);
+        [$from, $to] = $this->horizonRange($calendar);
+        $cursor = $from;
+
+        while ($cursor <= $to) {
+            if (!$this->isUserToggleable($cursor, $calendar)) {
+                $cursor = $cursor->modify('+1 day');
+                continue;
+            }
+
+            $matches = in_array((int) $cursor->format('N'), $weekdays, true);
+            if ($matches) {
+                $this->unblockDate($bookingKey, $cursor);
+            } else {
+                $this->blockDate($bookingKey, $cursor);
+            }
+
+            $cursor = $cursor->modify('+1 day');
         }
     }
 
@@ -234,18 +249,16 @@ final class BookingDayPlannerService
 
     private function blockDate(string $bookingKey, \DateTimeImmutable $day): void
     {
-        $existing = $this->blockedDateRepository->findOneBy([
-            'bookingKey' => $bookingKey,
-            'blockedDate' => $day->setTime(0, 0),
-        ]);
+        $day = $this->normalizePlannerDay($day);
 
+        $existing = $this->blockedDateRepository->findOneByBookingKeyAndDate($bookingKey, $day);
         if ($existing instanceof BookingBlockedDate) {
             return;
         }
 
         $blocked = (new BookingBlockedDate())
             ->setBookingKey($bookingKey)
-            ->setBlockedDate($day->setTime(0, 0))
+            ->setBlockedDate($day)
             ->setLabel(null);
 
         $this->entityManager->persist($blocked);
@@ -253,11 +266,9 @@ final class BookingDayPlannerService
 
     private function unblockDate(string $bookingKey, \DateTimeImmutable $day): void
     {
-        $existing = $this->blockedDateRepository->findOneBy([
-            'bookingKey' => $bookingKey,
-            'blockedDate' => $day->setTime(0, 0),
-        ]);
+        $day = $this->normalizePlannerDay($day);
 
+        $existing = $this->blockedDateRepository->findOneByBookingKeyAndDate($bookingKey, $day);
         if ($existing instanceof BookingBlockedDate) {
             $this->entityManager->remove($existing);
         }
@@ -265,6 +276,8 @@ final class BookingDayPlannerService
 
     private function isUserToggleable(\DateTimeImmutable $day, object $calendar): bool
     {
+        $day = $this->normalizePlannerDay($day);
+
         if ($day < $this->today()) {
             return false;
         }
@@ -286,25 +299,35 @@ final class BookingDayPlannerService
      */
     private function horizonRange(object $calendar): array
     {
-        $from = $this->today();
-        $to = $from->modify(sprintf('+%d days', $calendar->getHorizonDays()));
+        $from = $this->normalizePlannerDay($this->today());
+        $to = $this->normalizePlannerDay($from->modify(sprintf('+%d days', $calendar->getHorizonDays())));
 
         return [$from, $to];
     }
 
     private function today(): \DateTimeImmutable
     {
-        return new \DateTimeImmutable('today', $this->dateTimeHelper->timezone());
+        return $this->normalizePlannerDay(new \DateTimeImmutable('today', $this->dateTimeHelper->timezone()));
     }
 
     private function parsePlannerDate(string $value): \DateTimeImmutable
     {
-        $day = \DateTimeImmutable::createFromFormat('Y-m-d', trim($value), $this->dateTimeHelper->timezone());
-        if (false === $day) {
+        $day = $this->dateTimeHelper->fromDateString(trim($value));
+        if (null === $day) {
             throw new \InvalidArgumentException(sprintf('Date invalide : %s', $value));
         }
 
-        return $day->setTime(0, 0);
+        return $day;
+    }
+
+    private function normalizePlannerDay(\DateTimeImmutable $day): \DateTimeImmutable
+    {
+        $normalized = $this->dateTimeHelper->fromDateString($day->format('Y-m-d'));
+        if (null === $normalized) {
+            throw new \InvalidArgumentException(sprintf('Date invalide : %s', $day->format('Y-m-d')));
+        }
+
+        return $normalized;
     }
 
     /**
