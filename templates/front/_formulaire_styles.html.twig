@@ -11,4 +11,17 @@
         border-color: {{ pres.border_color_input|default('#dee2e6') }};
         box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.08);
     }
+    {% if pres.use_custom_button|default('0') == '1' %}
+    .hermes-form-{{ form_id }} .hermes-booking-submit {
+        color: {{ pres.color_btn }};
+        background-color: {{ pres.button_bgcolor }};
+        border-color: {{ pres.button_bgcolor }};
+    }
+    .hermes-form-{{ form_id }} .hermes-booking-submit:hover,
+    .hermes-form-{{ form_id }} .hermes-booking-submit:focus {
+        color: {{ pres.button_bgcolor }};
+        background-color: {{ pres.color_btn }};
+        border-color: {{ pres.color_btn }};
+    }
+    {% endif %}
 </style>

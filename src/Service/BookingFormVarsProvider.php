@@ -20,8 +20,8 @@ final class BookingFormVarsProvider
     /**
      * Variables Twig pour le formulaire front (sans dépendance au modèle de l'hôte).
      *
-     * @param array<string, string> $presentation Styles optionnels : bgcolor, color, bgcolor_btn,
-     *                                            bgcolor_input, color_input, border_color_input,
+     * @param array<string, string|null> $presentation Styles optionnels : bgcolor, color, bgcolor_btn,
+     *                                            color_btn, button_bgcolor, bgcolor_input, color_input, border_color_input,
      *                                            rounded_input, py_input, my_input
      *
      * @return array<string, mixed>
@@ -78,20 +78,26 @@ final class BookingFormVarsProvider
     }
 
     /**
-     * @param array<string, string> $presentation
+     * @param array<string, string|null> $presentation
      *
-     * @return array<string, string>
+     * @return array<string, string|null>
      */
     private function normalizePresentation(array $presentation): array
     {
         $rounded = (int) ($presentation['rounded_input'] ?? 0);
         $py = (int) ($presentation['py_input'] ?? 2);
         $my = (int) ($presentation['my_input'] ?? 2);
+        $colorBtn = $this->nullableColor($presentation['color_btn'] ?? null);
+        $buttonBgcolor = $this->nullableColor($presentation['button_bgcolor'] ?? null);
+        $useCustomButton = $colorBtn !== null && $buttonBgcolor !== null;
 
         return [
             'bgcolor' => (string) ($presentation['bgcolor'] ?? 'transparent'),
             'color' => (string) ($presentation['color'] ?? '#000000'),
             'bgcolor_btn' => (string) ($presentation['bgcolor_btn'] ?? 'btn-outline-primary'),
+            'color_btn' => $colorBtn,
+            'button_bgcolor' => $buttonBgcolor,
+            'use_custom_button' => $useCustomButton ? '1' : '0',
             'bgcolor_input' => (string) ($presentation['bgcolor_input'] ?? '#ffffff'),
             'color_input' => (string) ($presentation['color_input'] ?? '#000000'),
             'border_color_input' => (string) ($presentation['border_color_input'] ?? '#dee2e6'),
@@ -99,6 +105,21 @@ final class BookingFormVarsProvider
             'py_input' => (string) max(0, min(5, $py)),
             'my_input' => (string) max(0, min(5, $my)),
         ];
+    }
+
+    private function nullableColor(mixed $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $s = trim((string) $value);
+
+        if ($s === '' || $s === '~') {
+            return null;
+        }
+
+        return preg_match('/^#[0-9a-fA-F]{3,8}$/', $s) === 1 ? $s : null;
     }
 
     private function nullableString(mixed $value): ?string

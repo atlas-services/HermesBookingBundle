@@ -27,6 +27,11 @@
                             <input class="form-control" type="number" min="15" max="240" step="15" name="slot_duration_minutes" id="slot_duration_minutes" value="{{ calendar.slotDurationMinutes }}">
                             <div class="form-text">{{ 'booking.admin.slot_duration_help'|trans({}, 'booking') }}</div>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="max_participants_per_slot">{{ 'booking.admin.max_participants_per_slot'|trans({}, 'booking') }}</label>
+                            <input class="form-control" type="number" min="1" max="999" name="max_participants_per_slot" id="max_participants_per_slot" value="{{ calendar.maxParticipantsPerSlot }}">
+                            <div class="form-text">{{ 'booking.admin.max_participants_per_slot_help'|trans({}, 'booking') }}</div>
+                        </div>
                         <div class="row">
                             <div class="col-6 mb-3">
                                 <label class="form-label" for="work_start">{{ 'booking.admin.work_start'|trans({}, 'booking') }}</label>

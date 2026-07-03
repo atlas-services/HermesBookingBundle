@@ -47,13 +47,13 @@ final class BookingAvailabilityService
             $to->setTime(23, 59, 59),
         );
 
-        $reservedSlotsByDay = $this->groupReservedSlotsByDay($reservations, $calendar);
+        $reservedCountsByDay = $this->countReservedSlotsByDay($reservations, $excludeReservationId = null);
         $dates = [];
         $cursor = $from;
 
         while ($cursor <= $to) {
             $key = $cursor->format('Y-m-d');
-            if ($this->isDateSelectable($cursor, $calendar, $blocked, $reservedSlotsByDay[$key] ?? [], $now)) {
+            if ($this->isDateSelectable($cursor, $calendar, $blocked, $reservedCountsByDay[$key] ?? [], $now)) {
                 $dates[] = $key;
             }
             $cursor = $cursor->modify('+1 day');
@@ -78,16 +78,17 @@ final class BookingAvailabilityService
             $day->setTime(0, 0),
             $day->setTime(23, 59, 59),
         );
-        $reserved = $this->groupReservedSlotsByDay($reservations, $calendar, $excludeReservationId)[$day->format('Y-m-d')] ?? [];
+        $reservedCounts = $this->countReservedSlotsByDay($reservations, $excludeReservationId)[$day->format('Y-m-d')] ?? [];
 
-        if (!$this->isDateSelectable($day, $calendar, $blocked, $reserved, $now)) {
+        if (!$this->isDateSelectable($day, $calendar, $blocked, $reservedCounts, $now)) {
             return [];
         }
 
+        $maxParticipants = $calendar->getMaxParticipantsPerSlot();
         $allSlots = $this->generateSlots($calendar);
         $available = [];
         foreach ($allSlots as $slot) {
-            if (in_array($slot, $reserved, true)) {
+            if (($reservedCounts[$slot] ?? 0) >= $maxParticipants) {
                 continue;
             }
             $slotStart = \DateTimeImmutable::createFromFormat('Y-m-d H:i', $day->format('Y-m-d') . ' ' . $slot, $tz);
@@ -150,13 +151,13 @@ final class BookingAvailabilityService
 
     /**
      * @param array<string, true> $blocked
-     * @param list<string> $reservedSlots
+     * @param array<string, int> $reservedSlotCounts slot HH:MM => number of reservations
      */
     private function isDateSelectable(
         \DateTimeImmutable $day,
         BookingCalendar $calendar,
         array $blocked,
-        array $reservedSlots,
+        array $reservedSlotCounts,
         \DateTimeImmutable $now,
     ): bool {
         $key = $day->format('Y-m-d');
@@ -175,9 +176,10 @@ final class BookingAvailabilityService
             return false;
         }
 
+        $maxParticipants = $calendar->getMaxParticipantsPerSlot();
         $tz = $day->getTimezone();
         foreach ($allSlots as $slot) {
-            if (in_array($slot, $reservedSlots, true)) {
+            if (($reservedSlotCounts[$slot] ?? 0) >= $maxParticipants) {
                 continue;
             }
             $slotStart = \DateTimeImmutable::createFromFormat('Y-m-d H:i', $key . ' ' . $slot, $tz);
@@ -231,9 +233,9 @@ final class BookingAvailabilityService
     /**
      * @param list<object> $reservations
      *
-     * @return array<string, list<string>>
+     * @return array<string, array<string, int>>
      */
-    private function groupReservedSlotsByDay(array $reservations, BookingCalendar $calendar, ?int $excludeReservationId = null): array
+    private function countReservedSlotsByDay(array $reservations, ?int $excludeReservationId = null): array
     {
         $map = [];
         foreach ($reservations as $reservation) {
@@ -249,8 +251,9 @@ final class BookingAvailabilityService
             }
             $startsAt = $this->dateTimeHelper->fromStorage($reservation->getStartsAt());
             $day = $startsAt->format('Y-m-d');
+            $slot = $startsAt->format('H:i');
             $map[$day] ??= [];
-            $map[$day][] = $startsAt->format('H:i');
+            $map[$day][$slot] = ($map[$day][$slot] ?? 0) + 1;
         }
 
         return $map;

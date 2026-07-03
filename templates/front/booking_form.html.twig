@@ -81,7 +81,7 @@
                 {{ form_errors(booking_form.time) }}
 
                 <div class="text-center mt-4">
-                    <button type="submit" class="btn {{ pres.bgcolor_btn }} px-5">
+                    <button type="submit" class="btn hermes-booking-submit px-5{% if pres.use_custom_button|default('0') != '1' %} {{ pres.bgcolor_btn }}{% endif %}">
                         {{ 'booking.form.submit'|trans({}, 'booking') }}
                     </button>
                 </div>

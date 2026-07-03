@@ -58,9 +58,11 @@ booking:
     block_weekends: Bloquer les week-ends
     slot_duration: Durée d'un créneau (minutes)
     slot_duration_help: 'Ex. 60 min de 09:00 à 18:00 → créneaux 09:00, 10:00, 11:00…'
+    max_participants_per_slot: Inscriptions max. par créneau
+    max_participants_per_slot_help: 'Nombre de réservations possibles sur le même horaire (1 = un seul participant, comportement historique).'
     slots_help: |
       Les créneaux sont générés automatiquement à partir des horaires ci-contre.
-      Une réservation existante retire le créneau correspondant.
+      Un créneau disparaît lorsque le nombre d'inscriptions atteint la limite configurée.
       Les dates bloquées et les week-ends (si activé) masquent le jour entier.
     slots_preview: Aperçu des créneaux
     slots_preview_date: 'Prochain jour disponible : %date%'

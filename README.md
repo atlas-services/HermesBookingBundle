@@ -28,7 +28,13 @@ hermes_booking:
         entity: App\Entity\Section   # optionnel — libellés admin Hermes
 ```
 
-4. Migrations Doctrine (tables `booking_*`).
+4. Migrations Doctrine (tables `booking_*`). Après mise à jour du bundle, ajouter la colonne capacité si la table existe déjà :
+
+```sql
+ALTER TABLE booking_calendar ADD COLUMN max_participants_per_slot INTEGER NOT NULL DEFAULT 1;
+```
+
+Sinon : `php bin/console doctrine:migrations:diff` puis `migrate`.
 
 5. **Front** : le projet hôte adapte son modèle (section, configs…) et inclut le formulaire du bundle :
 

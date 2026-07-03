@@ -38,6 +38,9 @@ class BookingCalendar
     #[ORM\Column(name: 'horizon_days', options: ['default' => 90])]
     private int $horizonDays = 90;
 
+    #[ORM\Column(name: 'max_participants_per_slot', options: ['default' => 1])]
+    private int $maxParticipantsPerSlot = 1;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -123,6 +126,18 @@ class BookingCalendar
     public function setHorizonDays(int $horizonDays): self
     {
         $this->horizonDays = max(7, min(365, $horizonDays));
+
+        return $this;
+    }
+
+    public function getMaxParticipantsPerSlot(): int
+    {
+        return $this->maxParticipantsPerSlot;
+    }
+
+    public function setMaxParticipantsPerSlot(int $maxParticipantsPerSlot): self
+    {
+        $this->maxParticipantsPerSlot = max(1, min(999, $maxParticipantsPerSlot));
 
         return $this;
     }

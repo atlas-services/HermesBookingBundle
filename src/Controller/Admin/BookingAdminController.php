@@ -110,7 +110,8 @@ final class BookingAdminController extends AbstractController
                 ->setSlotDurationMinutes($request->request->getInt('slot_duration_minutes', 60))
                 ->setWorkStart($this->normalizeTime($request->request->getString('work_start', '09:00')))
                 ->setWorkEnd($this->normalizeTime($request->request->getString('work_end', '18:00')))
-                ->setHorizonDays($request->request->getInt('horizon_days', 90));
+                ->setHorizonDays($request->request->getInt('horizon_days', 90))
+                ->setMaxParticipantsPerSlot($request->request->getInt('max_participants_per_slot', 1));
             $this->entityManager->flush();
             $this->addFlash('success', $this->translator->trans('booking.admin.settings_saved', [], 'booking'));
 
