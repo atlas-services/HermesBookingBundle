@@ -4,6 +4,11 @@
       "main": "controllers/booking_form_controller.js",
       "enabled": true,
       "fetch": "eager"
+    },
+    "booking-day-planner": {
+      "main": "controllers/booking_day_planner_controller.js",
+      "enabled": true,
+      "fetch": "eager"
     }
   },
   "entrypoints": []

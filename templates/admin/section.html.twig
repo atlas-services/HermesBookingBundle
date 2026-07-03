@@ -50,30 +50,12 @@
                     </form>
                 </div>
             </div>
-
-            <div class="card mt-4">
-                <div class="card-header">{{ 'booking.admin.block_date'|trans({}, 'booking') }}</div>
-                <div class="card-body">
-                    <form method="post" class="row g-2 align-items-end">
-                        <input type="hidden" name="_action" value="block_date">
-                        <div class="col-md-5">
-                            <label class="form-label" for="blocked_date">{{ 'booking.admin.date'|trans({}, 'booking') }}</label>
-                            <input class="form-control" type="date" name="blocked_date" id="blocked_date" required>
-                        </div>
-                        <div class="col-md-5">
-                            <label class="form-label" for="label">{{ 'booking.admin.label'|trans({}, 'booking') }}</label>
-                            <input class="form-control" type="text" name="label" id="label" placeholder="{{ 'booking.admin.label_placeholder'|trans({}, 'booking') }}">
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-outline-danger w-100">{{ 'booking.admin.block'|trans({}, 'booking') }}</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
         </div>
 
         <div class="col-lg-7">
-            <div class="card mb-4">
+            {% include '@HermesBooking/admin/_day_planner.html.twig' with { bookingKey: bookingKey, calendar: calendar } %}
+
+            <div class="card mb-4 mt-4">
                 <div class="card-header">{{ 'booking.admin.slots_preview'|trans({}, 'booking') }}</div>
                 <div class="card-body">
                     {% if previewDate %}
@@ -90,40 +72,6 @@
                     {% else %}
                         <p class="text-muted mb-0">{{ 'booking.admin.slots_preview_none'|trans({}, 'booking') }}</p>
                     {% endif %}
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header">{{ 'booking.admin.blocked_dates'|trans({}, 'booking') }}</div>
-                <div class="card-body p-0">
-                    <table class="table mb-0">
-                        <thead>
-                            <tr>
-                                <th>{{ 'booking.admin.date'|trans({}, 'booking') }}</th>
-                                <th>{{ 'booking.admin.label'|trans({}, 'booking') }}</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for blocked in blockedDates %}
-                                <tr>
-                                    <td>{{ blocked.blockedDate|date('d/m/Y') }}</td>
-                                    <td>{{ blocked.label|default('—') }}</td>
-                                    <td class="text-end">
-                                        <form method="post" class="d-inline">
-                                            <input type="hidden" name="_action" value="unblock_date">
-                                            <input type="hidden" name="blocked_id" value="{{ blocked.id }}">
-                                            <button type="submit" class="btn btn-sm btn-outline-secondary">{{ 'booking.admin.unblock'|trans({}, 'booking') }}</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <td colspan="3" class="text-muted p-3">{{ 'booking.admin.no_blocked_dates'|trans({}, 'booking') }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
                 </div>
             </div>
 

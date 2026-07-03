@@ -82,6 +82,21 @@ booking:
     reservation_deleted: Réservation supprimée.
     no_section: Aucune section « Réservation » n’a été trouvée sur le site.
     block_date: Bloquer une date
+    day_planner: Disponibilité des jours
+    day_planner_horizon: 'Horizon : %days% jours'
+    day_planner_help: 'Cliquez sur un jour pour l’ouvrir ou le fermer. Maintenez Maj enfoncée et cliquez pour appliquer la même action sur une plage. Les boutons de jour permettent de ne garder qu’un jour de la semaine (ex. tous les mardis).'
+    day_planner_open_all: Tout ouvrir
+    day_planner_close_all: Tout fermer
+    day_planner_weekdays: 'Uniquement ce jour :'
+    day_planner_only_weekday: 'Fermer tout puis ouvrir les %day%'
+    day_planner_legend_open: Ouvert
+    day_planner_legend_closed: Fermé
+    day_planner_legend_weekend: Week-end (règle)
+    day_planner_legend_past: Passé / hors horizon
+    day_planner_loading: Chargement…
+    day_planner_saving: Enregistrement…
+    day_planner_saved: Enregistré
+    day_planner_error: Erreur lors de l’enregistrement
     date: Date
     label: Libellé
     label_placeholder: Jour férié, congés…

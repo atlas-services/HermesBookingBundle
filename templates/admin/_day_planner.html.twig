@@ -1,0 +1,82 @@
+<div class="card shadow-sm mb-4 hermes-booking-day-planner"
+     data-controller="booking-day-planner"
+     data-booking-day-planner-api-url-value="{{ path('hermes_booking_admin_day_planner', { bookingKey: bookingKey }) }}"
+     data-booking-day-planner-booking-key-value="{{ bookingKey }}">
+    <div class="card-header fw-semibold d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <span>{{ 'booking.admin.day_planner'|trans({}, 'booking') }}</span>
+        <small class="text-muted fw-normal">{{ 'booking.admin.day_planner_horizon'|trans({'%days%': calendar.horizonDays}, 'booking') }}</small>
+    </div>
+    <div class="card-body">
+        <p class="text-muted small mb-3">{{ 'booking.admin.day_planner_help'|trans({}, 'booking') }}</p>
+
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <button type="button" class="btn btn-sm btn-outline-success" data-action="booking-day-planner#openAll">
+                {{ 'booking.admin.day_planner_open_all'|trans({}, 'booking') }}
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-danger" data-action="booking-day-planner#closeAll">
+                {{ 'booking.admin.day_planner_close_all'|trans({}, 'booking') }}
+            </button>
+        </div>
+
+        <div class="hermes-booking-day-planner__weekdays mb-3" data-booking-day-planner-target="weekdayBar">
+            <span class="hermes-booking-day-planner__weekdays-label small text-muted">{{ 'booking.admin.day_planner_weekdays'|trans({}, 'booking') }}</span>
+            <div class="d-flex flex-wrap gap-1 mt-1">
+                {% set weekday_labels = {
+                    1: 'booking.form.weekday_mon',
+                    2: 'booking.form.weekday_tue',
+                    3: 'booking.form.weekday_wed',
+                    4: 'booking.form.weekday_thu',
+                    5: 'booking.form.weekday_fri',
+                    6: 'booking.form.weekday_sat',
+                    7: 'booking.form.weekday_sun',
+                } %}
+                {% for weekday, label_key in weekday_labels %}
+                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ label_key|trans({}, 'booking') }}">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                title="{{ 'booking.admin.day_planner_only_weekday'|trans({'%day%': label_key|trans({}, 'booking')}, 'booking') }}"
+                                data-action="booking-day-planner#onlyWeekday"
+                                data-booking-day-planner-weekday-param="{{ weekday }}">
+                            {{ label_key|trans({}, 'booking') }}
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="hermes-booking-picker">
+            <div class="hermes-booking-picker__header">
+                <h3 class="hermes-booking-picker__title h5 mb-0" data-booking-day-planner-target="monthLabel"></h3>
+                <div class="hermes-booking-picker__nav">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-action="booking-day-planner#previousMonth" aria-label="{{ 'booking.form.prev_month'|trans({}, 'booking') }}">&larr;</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-action="booking-day-planner#nextMonth" aria-label="{{ 'booking.form.next_month'|trans({}, 'booking') }}">&rarr;</button>
+                </div>
+            </div>
+            <div class="hermes-booking-picker__weekdays" aria-hidden="true">
+                <span class="hermes-booking-picker__weekday">{{ 'booking.form.weekday_mon'|trans({}, 'booking') }}</span>
+                <span class="hermes-booking-picker__weekday">{{ 'booking.form.weekday_tue'|trans({}, 'booking') }}</span>
+                <span class="hermes-booking-picker__weekday">{{ 'booking.form.weekday_wed'|trans({}, 'booking') }}</span>
+                <span class="hermes-booking-picker__weekday">{{ 'booking.form.weekday_thu'|trans({}, 'booking') }}</span>
+                <span class="hermes-booking-picker__weekday">{{ 'booking.form.weekday_fri'|trans({}, 'booking') }}</span>
+                <span class="hermes-booking-picker__weekday">{{ 'booking.form.weekday_sat'|trans({}, 'booking') }}</span>
+                <span class="hermes-booking-picker__weekday">{{ 'booking.form.weekday_sun'|trans({}, 'booking') }}</span>
+            </div>
+            <div class="hermes-booking-picker__grid" data-booking-day-planner-target="daysGrid"></div>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
+            <div class="hermes-booking-day-planner__legend d-flex flex-wrap gap-3 small">
+                <span class="hermes-booking-day-planner__legend-item hermes-booking-day-planner__legend-item--open">{{ 'booking.admin.day_planner_legend_open'|trans({}, 'booking') }}</span>
+                <span class="hermes-booking-day-planner__legend-item hermes-booking-day-planner__legend-item--closed">{{ 'booking.admin.day_planner_legend_closed'|trans({}, 'booking') }}</span>
+                <span class="hermes-booking-day-planner__legend-item hermes-booking-day-planner__legend-item--weekend">{{ 'booking.admin.day_planner_legend_weekend'|trans({}, 'booking') }}</span>
+                <span class="hermes-booking-day-planner__legend-item hermes-booking-day-planner__legend-item--past">{{ 'booking.admin.day_planner_legend_past'|trans({}, 'booking') }}</span>
+            </div>
+            <span class="small text-muted"
+                  data-booking-day-planner-target="status"
+                  data-loading="{{ 'booking.admin.day_planner_loading'|trans({}, 'booking')|e('html_attr') }}"
+                  data-saving="{{ 'booking.admin.day_planner_saving'|trans({}, 'booking')|e('html_attr') }}"
+                  data-saved="{{ 'booking.admin.day_planner_saved'|trans({}, 'booking')|e('html_attr') }}"
+                  data-error="{{ 'booking.admin.day_planner_error'|trans({}, 'booking')|e('html_attr') }}"></span>
+        </div>
+    </div>
+</div>

@@ -11,6 +11,7 @@ use AtlasServices\HermesBookingBundle\Repository\BookingBlockedDateRepository;
 use AtlasServices\HermesBookingBundle\Repository\BookingCalendarRepository;
 use AtlasServices\HermesBookingBundle\Repository\BookingReservationRepository;
 use AtlasServices\HermesBookingBundle\Service\BookingAvailabilityService;
+use AtlasServices\HermesBookingBundle\Service\BookingDayPlannerService;
 use AtlasServices\HermesBookingBundle\Service\BookingDateTimeHelper;
 use AtlasServices\HermesBookingBundle\Service\BookingReservationManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,6 +33,7 @@ final class BookingAdminController extends AbstractController
         private readonly BookingCalendarRepository $calendarRepository,
         private readonly BookingBlockedDateRepository $blockedDateRepository,
         private readonly BookingAvailabilityService $availabilityService,
+        private readonly BookingDayPlannerService $dayPlannerService,
         private readonly BookingReservationManager $reservationManager,
         private readonly BookingDateTimeHelper $dateTimeHelper,
         private readonly EntityManagerInterface $entityManager,
@@ -97,6 +99,29 @@ final class BookingAdminController extends AbstractController
         return new JsonResponse([
             'slots' => $this->availabilityService->getAvailableSlots($bookingKey, $day, $exclude),
         ]);
+    }
+
+    #[Route('/{bookingKey}/day-planner', name: 'hermes_booking_admin_day_planner', methods: ['GET'], requirements: ['bookingKey' => '[a-zA-Z0-9_-]+'])]
+    public function dayPlannerState(string $bookingKey): JsonResponse
+    {
+        return new JsonResponse($this->dayPlannerService->getPlannerState($bookingKey));
+    }
+
+    #[Route('/{bookingKey}/day-planner', name: 'hermes_booking_admin_day_planner_update', methods: ['POST'], requirements: ['bookingKey' => '[a-zA-Z0-9_-]+'])]
+    public function dayPlannerUpdate(string $bookingKey, Request $request): JsonResponse
+    {
+        try {
+            $payload = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+            if (!is_array($payload)) {
+                throw new \JsonException('Invalid payload');
+            }
+
+            return new JsonResponse($this->dayPlannerService->applyAction($bookingKey, $payload));
+        } catch (\JsonException) {
+            return new JsonResponse(['error' => 'invalid_json'], Response::HTTP_BAD_REQUEST);
+        } catch (\InvalidArgumentException $exception) {
+            return new JsonResponse(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     private function handlePost(Request $request, string $bookingKey): void

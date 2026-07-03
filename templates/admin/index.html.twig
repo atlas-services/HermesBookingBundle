@@ -60,43 +60,11 @@
                         </form>
                     </div>
                 </div>
-
-                <div class="card shadow-sm mt-4">
-                    <div class="card-header fw-semibold">{{ 'booking.admin.block_date'|trans({}, 'booking') }}</div>
-                    <div class="card-body">
-                        <form method="post" class="row g-2 align-items-end">
-                            <input type="hidden" name="_action" value="block_date">
-                            <div class="col-md-5">
-                                <label class="form-label" for="blocked_date">{{ 'booking.admin.date'|trans({}, 'booking') }}</label>
-                                <input class="form-control" type="date" name="blocked_date" id="blocked_date" required>
-                            </div>
-                            <div class="col-md-5">
-                                <label class="form-label" for="label">{{ 'booking.admin.label'|trans({}, 'booking') }}</label>
-                                <input class="form-control" type="text" name="label" id="label" placeholder="{{ 'booking.admin.label_placeholder'|trans({}, 'booking') }}">
-                            </div>
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-outline-danger w-100">{{ 'booking.admin.block'|trans({}, 'booking') }}</button>
-                            </div>
-                        </form>
-                        {% if blockedDates is not empty %}
-                            <ul class="list-group list-group-flush mt-3">
-                                {% for blocked in blockedDates %}
-                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                        <span>{{ blocked.blockedDate|date('d/m/Y') }}{% if blocked.label %} — {{ blocked.label }}{% endif %}</span>
-                                        <form method="post" class="d-inline">
-                                            <input type="hidden" name="_action" value="unblock_date">
-                                            <input type="hidden" name="blocked_id" value="{{ blocked.id }}">
-                                            <button type="submit" class="btn btn-sm btn-outline-secondary">{{ 'booking.admin.unblock'|trans({}, 'booking') }}</button>
-                                        </form>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    </div>
-                </div>
             </div>
 
             <div class="col-xl-8">
+                {% include '@HermesBooking/admin/_day_planner.html.twig' with { bookingKey: bookingKey, calendar: calendar } %}
+
                 {% if editingReservation %}
                     {% set editDate = editingReservation.startsAt|booking_datetime('Y-m-d') %}
                     {% set editTime = editingReservation.startsAt|booking_datetime('H:i') %}

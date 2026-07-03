@@ -147,3 +147,93 @@
         text-align: center;
     }
 }
+
+/* Admin day planner */
+.hermes-booking-day-planner__day {
+    cursor: pointer;
+}
+
+.hermes-booking-day-planner__day:disabled {
+    cursor: default;
+    opacity: 0.55;
+}
+
+.hermes-booking-day-planner__day--open {
+    background: rgba(25, 135, 84, 0.12);
+    border-color: rgba(25, 135, 84, 0.45);
+    color: #146c43;
+}
+
+.hermes-booking-day-planner__day--open:not(:disabled):hover {
+    background: rgba(25, 135, 84, 0.22);
+    border-color: #198754;
+}
+
+.hermes-booking-day-planner__day--closed {
+    background: rgba(220, 53, 69, 0.1);
+    border-color: rgba(220, 53, 69, 0.4);
+    color: #b02a37;
+}
+
+.hermes-booking-day-planner__day--closed:not(:disabled):hover {
+    background: rgba(220, 53, 69, 0.2);
+    border-color: #dc3545;
+}
+
+.hermes-booking-day-planner__day--weekend_rule {
+    background: repeating-linear-gradient(
+        -45deg,
+        rgba(0, 0, 0, 0.04),
+        rgba(0, 0, 0, 0.04) 4px,
+        rgba(0, 0, 0, 0.08) 4px,
+        rgba(0, 0, 0, 0.08) 8px
+    );
+    border-color: rgba(0, 0, 0, 0.12);
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.hermes-booking-day-planner__day--past,
+.hermes-booking-day-planner__day--out_of_range {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: transparent;
+    color: rgba(0, 0, 0, 0.3);
+}
+
+.hermes-booking-day-planner__legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.hermes-booking-day-planner__legend-item::before {
+    content: '';
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 0.2rem;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.hermes-booking-day-planner__legend-item--open::before {
+    background: rgba(25, 135, 84, 0.2);
+    border-color: rgba(25, 135, 84, 0.45);
+}
+
+.hermes-booking-day-planner__legend-item--closed::before {
+    background: rgba(220, 53, 69, 0.15);
+    border-color: rgba(220, 53, 69, 0.4);
+}
+
+.hermes-booking-day-planner__legend-item--weekend::before {
+    background: repeating-linear-gradient(
+        -45deg,
+        rgba(0, 0, 0, 0.04),
+        rgba(0, 0, 0, 0.04) 3px,
+        rgba(0, 0, 0, 0.08) 3px,
+        rgba(0, 0, 0, 0.08) 6px
+    );
+}
+
+.hermes-booking-day-planner__legend-item--past::before {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: transparent;
+}
