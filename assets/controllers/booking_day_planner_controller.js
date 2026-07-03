@@ -42,11 +42,11 @@ export default class extends Controller {
     }
 
     async openAll() {
-        await this.postAction({ action: 'set_all', open: true });
+        await this.postAction({ action: 'set_all', open: true, ...this.currentMonthScope() });
     }
 
     async closeAll() {
-        await this.postAction({ action: 'set_all', open: false });
+        await this.postAction({ action: 'set_all', open: false, ...this.currentMonthScope() });
     }
 
     async openWeekday(event) {
@@ -54,7 +54,7 @@ export default class extends Controller {
         if (!Number.isFinite(weekday)) {
             return;
         }
-        await this.postAction({ action: 'set_weekdays', weekdays: [weekday], open: true });
+        await this.postAction({ action: 'set_weekdays', weekdays: [weekday], open: true, ...this.currentMonthScope() });
     }
 
     async closeWeekday(event) {
@@ -62,7 +62,7 @@ export default class extends Controller {
         if (!Number.isFinite(weekday)) {
             return;
         }
-        await this.postAction({ action: 'set_weekdays', weekdays: [weekday], open: false });
+        await this.postAction({ action: 'set_weekdays', weekdays: [weekday], open: false, ...this.currentMonthScope() });
     }
 
     async onlyWeekday(event) {
@@ -70,7 +70,14 @@ export default class extends Controller {
         if (!Number.isFinite(weekday)) {
             return;
         }
-        await this.postAction({ action: 'only_weekdays', weekdays: [weekday] });
+        await this.postAction({ action: 'only_weekdays', weekdays: [weekday], ...this.currentMonthScope() });
+    }
+
+    currentMonthScope() {
+        return {
+            year: this.currentYear,
+            month: this.currentMonth,
+        };
     }
 
     async loadState() {

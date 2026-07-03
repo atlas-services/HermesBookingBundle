@@ -76,12 +76,18 @@ final class BookingDayPlannerService
                 (bool) ($payload['open'] ?? false),
                 $calendar,
             ),
-            'set_all' => $this->setAllInHorizon($bookingKey, (bool) ($payload['open'] ?? false), $calendar),
-            'set_weekdays' => $this->setWeekdaysInHorizon(
+            'set_all' => $this->setAllInRange(
+                $bookingKey,
+                (bool) ($payload['open'] ?? false),
+                $calendar,
+                $this->actionRange($calendar, $payload),
+            ),
+            'set_weekdays' => $this->setWeekdaysInRange(
                 $bookingKey,
                 $this->normalizeWeekdays($payload['weekdays'] ?? []),
                 (bool) ($payload['open'] ?? true),
                 $calendar,
+                $this->actionRange($calendar, $payload),
             ),
             'set_range' => $this->setRange(
                 $bookingKey,
@@ -90,10 +96,11 @@ final class BookingDayPlannerService
                 (bool) ($payload['open'] ?? false),
                 $calendar,
             ),
-            'only_weekdays' => $this->onlyWeekdaysInHorizon(
+            'only_weekdays' => $this->onlyWeekdaysInRange(
                 $bookingKey,
                 $this->normalizeWeekdays($payload['weekdays'] ?? []),
                 $calendar,
+                $this->actionRange($calendar, $payload),
             ),
             default => throw new \InvalidArgumentException(sprintf('Action planificateur inconnue : %s', $action)),
         };
@@ -146,9 +153,13 @@ final class BookingDayPlannerService
         }
     }
 
-    private function setAllInHorizon(string $bookingKey, bool $open, object $calendar): void
+    private function setAllInRange(string $bookingKey, bool $open, object $calendar, ?array $range): void
     {
-        [$from, $to] = $this->horizonRange($calendar);
+        if (null === $range) {
+            return;
+        }
+
+        [$from, $to] = $range;
         $cursor = $from;
 
         while ($cursor <= $to) {
@@ -166,9 +177,13 @@ final class BookingDayPlannerService
     /**
      * @param list<int> $weekdays ISO-8601 (1=lundi … 7=dimanche)
      */
-    private function setWeekdaysInHorizon(string $bookingKey, array $weekdays, bool $open, object $calendar): void
+    private function setWeekdaysInRange(string $bookingKey, array $weekdays, bool $open, object $calendar, ?array $range): void
     {
-        [$from, $to] = $this->horizonRange($calendar);
+        if (null === $range) {
+            return;
+        }
+
+        [$from, $to] = $range;
         $cursor = $from;
 
         while ($cursor <= $to) {
@@ -196,9 +211,13 @@ final class BookingDayPlannerService
     /**
      * @param list<int> $weekdays ISO-8601 (1=lundi … 7=dimanche)
      */
-    private function onlyWeekdaysInHorizon(string $bookingKey, array $weekdays, object $calendar): void
+    private function onlyWeekdaysInRange(string $bookingKey, array $weekdays, object $calendar, ?array $range): void
     {
-        [$from, $to] = $this->horizonRange($calendar);
+        if (null === $range) {
+            return;
+        }
+
+        [$from, $to] = $range;
         $cursor = $from;
 
         while ($cursor <= $to) {
@@ -292,6 +311,53 @@ final class BookingDayPlannerService
         }
 
         return true;
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     *
+     * @return array{\DateTimeImmutable, \DateTimeImmutable}|null
+     */
+    private function actionRange(object $calendar, array $payload): ?array
+    {
+        $year = (int) ($payload['year'] ?? 0);
+        $month = (int) ($payload['month'] ?? 0);
+
+        if ($year < 1 || $month < 1 || $month > 12) {
+            throw new \InvalidArgumentException('Les actions groupées requièrent year et month.');
+        }
+
+        return $this->intersectRange(
+            $this->monthRange($year, $month),
+            $this->horizonRange($calendar),
+        );
+    }
+
+    /**
+     * @return array{\DateTimeImmutable, \DateTimeImmutable}
+     */
+    private function monthRange(int $year, int $month): array
+    {
+        $from = $this->parsePlannerDate(sprintf('%04d-%02d-01', $year, $month));
+        $to = $this->normalizePlannerDay($from->modify('last day of this month'));
+
+        return [$from, $to];
+    }
+
+    /**
+     * @param array{\DateTimeImmutable, \DateTimeImmutable} $first
+     * @param array{\DateTimeImmutable, \DateTimeImmutable} $second
+     *
+     * @return array{\DateTimeImmutable, \DateTimeImmutable}|null
+     */
+    private function intersectRange(array $first, array $second): ?array
+    {
+        [$from, $to] = [$first[0] > $second[0] ? $first[0] : $second[0], $first[1] < $second[1] ? $first[1] : $second[1]];
+        if ($from > $to) {
+            return null;
+        }
+
+        return [$from, $to];
     }
 
     /**
