@@ -75,8 +75,12 @@
                                 <input type="hidden" name="_action" value="update_reservation">
                                 <input type="hidden" name="reservation_id" value="{{ editingReservation.id }}">
                                 <div class="col-md-6">
-                                    <label class="form-label">{{ 'booking.admin.col_name'|trans({}, 'booking') }}</label>
-                                    <input class="form-control" type="text" name="customer_name" value="{{ editingReservation.customerName }}" required>
+                                    <label class="form-label">{{ 'booking.form.firstname'|trans({}, 'booking') }}</label>
+                                    <input class="form-control" type="text" name="firstname" value="{{ editingReservation.firstName }}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">{{ 'booking.form.lastname'|trans({}, 'booking') }}</label>
+                                    <input class="form-control" type="text" name="lastname" value="{{ editingReservation.lastName }}" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">{{ 'booking.admin.col_email'|trans({}, 'booking') }}</label>
@@ -124,7 +128,7 @@
                                 {% for reservation in reservations %}
                                     <tr>
                                         <td>{{ reservation.startsAt|booking_datetime }}</td>
-                                        <td>{{ reservation.customerName }}</td>
+                                        <td>{{ reservation.displayName }}</td>
                                         <td>{{ reservation.email }}</td>
                                         <td>{{ reservation.phone|default('—') }}</td>
                                         <td class="text-end text-nowrap">

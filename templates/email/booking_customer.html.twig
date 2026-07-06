@@ -8,7 +8,7 @@
     <h1 style="font-size: 1.25rem;">
         {{ (updated ? 'booking.mail.customer_updated_heading' : 'booking.mail.customer_heading')|trans({}, 'booking', locale|default('fr')) }}
     </h1>
-    <p>{{ 'booking.mail.customer_greeting'|trans({'%name%': reservation.customerName}, 'booking', locale|default('fr')) }}</p>
+    <p>{{ 'booking.mail.customer_greeting'|trans({'%name%': reservation.displayName}, 'booking', locale|default('fr')) }}</p>
     {% if calendarLabel %}
         <p><strong>{{ 'booking.mail.calendar'|trans({}, 'booking', locale|default('fr')) }}:</strong> {{ calendarLabel|e }}</p>
     {% endif %}

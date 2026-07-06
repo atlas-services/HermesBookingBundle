@@ -58,7 +58,10 @@
                     <div class="hermes-booking-form__fields">
                         <div class="row g-3">
                             <div class="col-12 col-md-6">
-                                {{ form_row(booking_form.customerName, { attr: { class: input_class } }) }}
+                                {{ form_row(booking_form.firstname, { attr: { class: input_class } }) }}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                {{ form_row(booking_form.lastname, { attr: { class: input_class } }) }}
                             </div>
                             <div class="col-12 col-md-6">
                                 {{ form_row(booking_form.email, { attr: { class: input_class } }) }}

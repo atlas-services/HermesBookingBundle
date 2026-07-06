@@ -1,0 +1,8 @@
+booking:
+  form:
+    firstname: First name
+    lastname: Last name
+    firstname_required: First name is required.
+    lastname_required: Last name is required.
+    firstname_max: First name is too long.
+    lastname_max: Last name is too long.

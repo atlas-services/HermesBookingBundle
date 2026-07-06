@@ -28,10 +28,21 @@ hermes_booking:
         entity: App\Entity\Section   # optionnel — libellés admin Hermes
 ```
 
-4. Migrations Doctrine (tables `booking_*`). Après mise à jour du bundle, ajouter la colonne capacité si la table existe déjà :
+4. Migrations Doctrine (tables `booking_*`). Après mise à jour du bundle :
+
+**Capacité par créneau** (si la table existe déjà) :
 
 ```sql
 ALTER TABLE booking_calendar ADD COLUMN max_participants_per_slot INTEGER NOT NULL DEFAULT 1;
+```
+
+**Prénom / nom** (remplace `customer_name` sur `booking_reservation`) :
+
+```sql
+ALTER TABLE booking_reservation ADD COLUMN first_name VARCHAR(80) NOT NULL DEFAULT '';
+ALTER TABLE booking_reservation ADD COLUMN last_name VARCHAR(80) NOT NULL DEFAULT '';
+-- Migrer customer_name → first_name / last_name puis :
+ALTER TABLE booking_reservation DROP COLUMN customer_name;
 ```
 
 Sinon : `php bin/console doctrine:migrations:diff` puis `migrate`.

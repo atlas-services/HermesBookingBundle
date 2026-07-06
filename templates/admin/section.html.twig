@@ -90,7 +90,7 @@
                             {% for reservation in reservations %}
                                 <tr>
                                     <td>{{ reservation.startsAt|booking_datetime }}</td>
-                                    <td>{{ reservation.customerName }}</td>
+                                    <td>{{ reservation.displayName }}</td>
                                     <td>{{ reservation.email }}</td>
                                 </tr>
                             {% else %}
