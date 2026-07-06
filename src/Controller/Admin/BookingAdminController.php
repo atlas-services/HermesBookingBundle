@@ -187,7 +187,8 @@ final class BookingAdminController extends AbstractController
 
             try {
                 $this->reservationManager->updateReservation($reservation, [
-                    'customerName' => $request->request->getString('customer_name'),
+                    'firstname' => $request->request->getString('firstname'),
+                    'lastname' => $request->request->getString('lastname'),
                     'email' => $request->request->getString('email'),
                     'phone' => $request->request->getString('phone') ?: null,
                     'message' => $request->request->getString('message') ?: null,

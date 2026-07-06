@@ -81,7 +81,7 @@ final class BookingMailer
         array $context,
     ): void {
         $subject = $this->translator->trans($subjectKey, [
-            '%name%' => $reservation->getCustomerName(),
+            '%name%' => $reservation->getDisplayName(),
             '%date%' => $context['dateLabel'],
         ], 'booking', $locale);
 
@@ -114,7 +114,7 @@ final class BookingMailer
         }
 
         $subject = $this->translator->trans($subjectKey, [
-            '%name%' => $reservation->getCustomerName(),
+            '%name%' => $reservation->getDisplayName(),
             '%date%' => $context['dateLabel'],
         ], 'booking', $locale);
 

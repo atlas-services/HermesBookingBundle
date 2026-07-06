@@ -34,10 +34,21 @@ final class BookingReservationFormType extends AbstractType
         $bookingKey = (string) $options['booking_key'];
 
         $builder
-            ->add('customerName', TextType::class, [
-                'label' => 'booking.form.name',
-                'attr' => ['class' => $inputClass],
-                'constraints' => [new Assert\NotBlank(), new Assert\Length(max: 120)],
+            ->add('firstname', TextType::class, [
+                'label' => 'booking.form.firstname',
+                'attr' => array_merge(['class' => $inputClass], ['autocomplete' => 'given-name']),
+                'constraints' => [
+                    new Assert\NotBlank(message: 'booking.form.firstname_required'),
+                    new Assert\Length(max: 80, maxMessage: 'booking.form.firstname_max'),
+                ],
+            ])
+            ->add('lastname', TextType::class, [
+                'label' => 'booking.form.lastname',
+                'attr' => array_merge(['class' => $inputClass], ['autocomplete' => 'family-name']),
+                'constraints' => [
+                    new Assert\NotBlank(message: 'booking.form.lastname_required'),
+                    new Assert\Length(max: 80, maxMessage: 'booking.form.lastname_max'),
+                ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'booking.form.email',

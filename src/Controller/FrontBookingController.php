@@ -90,7 +90,8 @@ final class FrontBookingController extends AbstractController
             }
 
             $data = [
-                'customerName' => (string) $form->get('customerName')->getData(),
+                'firstname' => trim((string) $form->get('firstname')->getData()),
+                'lastname' => trim((string) $form->get('lastname')->getData()),
                 'email' => (string) $form->get('email')->getData(),
                 'phone' => $form->get('phone')->getData(),
                 'message' => $form->get('message')->getData(),

@@ -26,8 +26,11 @@ class BookingReservation
     #[ORM\Column(name: 'duration_minutes')]
     private int $durationMinutes;
 
-    #[ORM\Column(name: 'customer_name', length: 120)]
-    private string $customerName;
+    #[ORM\Column(name: 'first_name', length: 80)]
+    private string $firstName = '';
+
+    #[ORM\Column(name: 'last_name', length: 80)]
+    private string $lastName = '';
 
     #[ORM\Column(length: 180)]
     private string $email;
@@ -87,16 +90,33 @@ class BookingReservation
         return $this;
     }
 
-    public function getCustomerName(): string
+    public function getFirstName(): string
     {
-        return $this->customerName;
+        return $this->firstName;
     }
 
-    public function setCustomerName(string $customerName): self
+    public function setFirstName(string $firstName): self
     {
-        $this->customerName = $customerName;
+        $this->firstName = trim($firstName);
 
         return $this;
+    }
+
+    public function getLastName(): string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(string $lastName): self
+    {
+        $this->lastName = trim($lastName);
+
+        return $this;
+    }
+
+    public function getDisplayName(): string
+    {
+        return trim($this->firstName.' '.$this->lastName);
     }
 
     public function getEmail(): string

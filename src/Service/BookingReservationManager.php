@@ -22,7 +22,7 @@ final class BookingReservationManager
     }
 
     /**
-     * @param array{customerName: string, email: string, phone?: ?string, message?: ?string, date: string, time: string, locale?: string} $data
+     * @param array{firstname: string, lastname: string, email: string, phone?: ?string, message?: ?string, date: string, time: string, locale?: string} $data
      */
     public function createReservation(string $bookingKey, array $data): BookingReservation
     {
@@ -40,7 +40,8 @@ final class BookingReservationManager
             ->setBookingKey($bookingKey)
             ->setStartsAt($startsAt)
             ->setDurationMinutes($calendar->getSlotDurationMinutes())
-            ->setCustomerName($data['customerName'])
+            ->setFirstName($data['firstname'])
+            ->setLastName($data['lastname'])
             ->setEmail($data['email'])
             ->setPhone($data['phone'] ?? null)
             ->setMessage($data['message'] ?? null);
@@ -58,7 +59,7 @@ final class BookingReservationManager
     }
 
     /**
-     * @param array{customerName: string, email: string, phone?: ?string, message?: ?string, date: string, time: string, locale?: string} $data
+     * @param array{firstname: string, lastname: string, email: string, phone?: ?string, message?: ?string, date: string, time: string, locale?: string} $data
      */
     public function updateReservation(BookingReservation $reservation, array $data): BookingReservation
     {
@@ -81,7 +82,8 @@ final class BookingReservationManager
 
         $reservation
             ->setStartsAt($startsAt)
-            ->setCustomerName($data['customerName'])
+            ->setFirstName($data['firstname'])
+            ->setLastName($data['lastname'])
             ->setEmail($data['email'])
             ->setPhone($data['phone'] ?? null)
             ->setMessage($data['message'] ?? null);
