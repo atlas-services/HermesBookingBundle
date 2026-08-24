@@ -95,3 +95,9 @@ L’hôte fournit un `bookingKey` (ex. `s12`) et un tableau `presentation` optio
 
 Avec `section_resolver.entity: App\Entity\Section`, l’admin affiche le nom des pages.
 Sans entité Section, repli sur les agendas déjà créés (`booking_calendar`).
+
+## License
+
+Released under the **MIT** license — same style as Symfony. See [LICENSE](LICENSE).
+
+Copyright: **© 2026-present** Tayeb CHIKHI.

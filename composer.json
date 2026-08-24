@@ -2,7 +2,7 @@
   "name": "atlas-services/hermes-booking-bundle",
   "description": "Booking module for Symfony 8 / Hermes CMS",
   "type": "symfony-bundle",
-  "license": "proprietary",
+  "license": "MIT",
   "require": {
     "php": ">=8.4",
     "doctrine/orm": "^3.0",
